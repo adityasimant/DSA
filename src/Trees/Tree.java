@@ -1,9 +1,6 @@
 package Trees;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 
 
 class TreeNode {
@@ -31,18 +28,9 @@ class Tree {
         TreeNode root = null;
         int[] values = {2, 3, 4, 5, 6};
 
-        // Insert values into BST
-        for (int val : values) {
-            root = insertIntoBST(root, val);
-        }
-
-        // Print the tree (level order)
-        System.out.println("Binary Search Tree:");
-        printLevelOrder(root);
-
-        TreeSolution sol = new TreeSolution();
-        int result = sol.minDepth(root);
-        System.out.println("solution: " + result);
+        int n = 23456;
+        System.out.println(23456/10);
+        System.out.println(23456%10);
     }
 
     // Insert function for BST
@@ -325,5 +313,76 @@ class TreeSolution {
         return 1 + Math.max(leftSubtree, rightSubtree);
     }
 
-    //
+    // Binary Tree Right Side View
+    // Time O(n) Space  O(n)
+    public List<Integer> rightSideView(TreeNode root) {
+        List<Integer> rightSideElements = new ArrayList<>();
+        if (root == null) return new ArrayList<>();
+
+        Queue<TreeNode> levelList = new LinkedList<>();
+        levelList.add(root);
+
+        while (!levelList.isEmpty()){
+            int currentQueueSize = levelList.size();
+            for (int i=0; i< currentQueueSize; i++){
+                TreeNode currentNode = levelList.poll();
+                if (i == currentQueueSize-1){
+                    rightSideElements.add(currentNode.val);
+                }
+
+                if (currentNode.left != null) levelList.offer(currentNode.left);
+                if (currentNode.right != null) levelList.offer(currentNode.right);
+            }
+        }
+
+        return rightSideElements;
+    }
+
+    // Valid Binary Search Tree
+    public boolean isValidBST(TreeNode root) {
+        List<Integer> list = new ArrayList<>();
+        treeDFS(root, list);
+        if (list.size() < 2) return  true;
+        for (int i=1; i<list.size(); i++){
+            if (list.get(i)<= list.get(i-1)){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void treeDFS(TreeNode root, List<Integer> list){
+        if (root!=null){
+            treeDFS(root.left, list);
+            list.add(root.val);
+            treeDFS(root.right, list);
+        }
+    }
+
+
+    // Kth Smallest Integer in BST
+    public int kthSmallest(TreeNode root, int k) {
+        PriorityQueue<Integer> queue = new PriorityQueue<>();
+        treeDFSQueue(root, queue);
+        System.out.println(queue.size());
+        int counter = 0;
+        while (counter<=k){
+            counter++;
+            if (counter == k){
+                return queue.poll();
+            }else{
+                queue.poll();
+            }
+        }
+
+        return -1;
+    }
+
+    private void treeDFSQueue(TreeNode root, PriorityQueue<Integer> queue){
+        if (root!=null){
+            queue.add(root.val);
+            treeDFSQueue(root.left, queue);
+            treeDFSQueue(root.right, queue);
+        }
+    }
 }
