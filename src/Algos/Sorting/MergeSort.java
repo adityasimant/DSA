@@ -1,4 +1,4 @@
-import java.util.Random;
+package Algos.Sorting;
 
 public class MergeSort {
     public static void main(String[] args) {
