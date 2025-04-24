@@ -2,10 +2,7 @@ package Backtracking;
 
 import org.w3c.dom.ls.LSInput;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 class BackTrackingMain{
     public static void main(String[] args) {
@@ -80,5 +77,122 @@ public class BackTrackingSolution {
         subList.remove(subList.size()-1);
         // no pick
         findDupSubsets(nums, index+1, subList);
+    }
+
+    // Permutations
+    List<List<Integer>> permutations = new ArrayList<>();
+    public List<List<Integer>> permute(int[] nums) {
+        findALLPermutations(nums, 0);
+        return permutations;
+    }
+
+    private void findALLPermutations(int[] nums, int index){
+        if (index == nums.length){
+            List<Integer> subList = new ArrayList<>();
+            for (int i: nums) subList.add(i);
+            permutations.add(new ArrayList<>(subList));
+        }
+
+        for (int i=index; i< nums.length; i++){
+            swap(nums, index, i);
+            findALLPermutations(nums, index+1);
+
+            // backtrack
+            swap(nums, index, i);
+        }
+    }
+
+    void swap(int[] nums, int u, int v){
+        int tmp = nums[u];
+        nums[u] = nums[v];
+        nums[v] = tmp;
+    }
+
+    // LC 17: Letter Combinations of a Phone Number
+    public List<String> letterCombinations(String digits) {
+
+        HashMap<Character, String> numberMap = new HashMap<>();
+        numberMap.put('2', "abc");
+        numberMap.put('3', "def");
+        numberMap.put('4', "ghi");
+        numberMap.put('5', "jkl");
+        numberMap.put('6', "mno");
+        numberMap.put('7', "pqrs");
+        numberMap.put('8', "tuv");
+        numberMap.put('9', "wxyz");
+
+
+        List<String> letterCombinations = new ArrayList<>();
+        if (digits.isEmpty()) return letterCombinations;
+        findLetterCombinations(digits, new StringBuilder(),0, letterCombinations, numberMap);
+        return letterCombinations;
+
+    }
+
+    private void findLetterCombinations(String digits, StringBuilder cur, int index, List<String> combinations, HashMap<Character, String> map){
+        if (index == digits.length()){
+            combinations.add(cur.toString());
+            return;
+        }
+
+        String currentLetterStr = map.get(digits.charAt(index));
+        for (int i=0; i<currentLetterStr.length(); i++){
+            cur.append(currentLetterStr.charAt(i));
+            findLetterCombinations(digits, cur, index + 1, combinations, map);
+            cur.deleteCharAt(cur.length()-1);
+        }
+    }
+
+    // LC 39: Combination Sum
+    public List<List<Integer>> combinationSum(int[] candidates, int target) {
+        List<List<Integer>> combinationSum = new ArrayList<>();
+        calculateCombinationSum(candidates, 0, target, new ArrayList<>(), combinationSum, 0);
+        return combinationSum;
+    }
+
+    private void calculateCombinationSum(int[] candidates, int sum, int target, List<Integer> currentList , List<List<Integer>> combinationSum, int index){
+        if (sum == target){
+            // add n return
+            combinationSum.add(new ArrayList<>(currentList));
+            return;
+        } else if (sum > target) {
+            return;
+        }
+
+        for (int i=index; i<candidates.length; i++){
+            sum += candidates[i];
+            currentList.add(candidates[i]);
+            calculateCombinationSum(candidates, sum, target, currentList, combinationSum, index);
+            sum -= candidates[i];
+            currentList.remove(currentList.size() -1);
+        }
+    }
+
+    // LC 39: Combination Sum II
+    static List<List<Integer>> combinationSum2 = new ArrayList<>();
+    public List<List<Integer>> combinationSum2(int[] candidates, int target) {
+        List<Integer> cur = new ArrayList<>();
+        for(int i: candidates) cur.add(i);
+        findLetterCombinations2(candidates, target, 0, 0, cur);
+        return combinationSum2;
+    }
+
+    private void findLetterCombinations2(int[] candidates, int target, int sum, int index, List<Integer> currentList){
+        // Base condition
+        if (sum == target) {
+            combinationSum2.add(new ArrayList<>(currentList));
+            return;
+        }
+        if (sum > target) return;
+
+        for (int i = 0; i<candidates.length; i++){
+            sum += currentList.get(i);
+            currentList.remove(i);
+            // call recur
+            findLetterCombinations2(candidates, target, sum, index , currentList);
+            // backtrack
+            currentList.add(i, candidates[i]);
+            sum -= currentList.get(i);
+        }
     }
 }

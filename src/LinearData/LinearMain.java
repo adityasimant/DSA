@@ -9,8 +9,8 @@ public class LinearMain {
         int ans1 = sol.pivotInteger(4);
 
         int[] arr = {1, 3};
-        int[] arr1 = {2,4};
-        double ans2 = sol.findMedianSortedArrays(arr, arr1);
+        int[] arr1 = {2, 4};
+        double ans2 = sol.countLargestGroup(51);
         System.out.println(ans2);
 //        LinearSolution.KeyValueStore ky = new LinearSolution.KeyValueStore();
 //        ky.setData("alice", "happy", 1);
@@ -343,37 +343,38 @@ class LinearSolution {
     // Find the Duplicate Number
     public int findDuplicate1(int[] nums) {
         HashSet<Integer> numSet = new HashSet<>();
-        for (int i: nums){
-            if(numSet.contains(i)) return i;
+        for (int i : nums) {
+            if (numSet.contains(i)) return i;
             else numSet.add(i);
         }
         return -1;
     }
 
     public int findDuplicate(int[] nums) {
-        for (int i =0; i<nums.length; i++){
+        for (int i = 0; i < nums.length; i++) {
 
         }
         return -1;
     }
 
     // LRU Cache
-    class Cache{
+    class Cache {
         int key;
         int value;
         int transactions;
 
-        Cache(int key, int value, int transactions){
+        Cache(int key, int value, int transactions) {
             this.key = key;
             this.value = value;
             this.transactions = transactions;
 
         }
 
-        public void incrementTransaction(){
+        public void incrementTransaction() {
 
         }
     }
+
     class LRUCache {
 
         public LRUCache(int capacity) {
@@ -393,13 +394,13 @@ class LinearSolution {
         StringBuilder builder = new StringBuilder(s);
         HashMap<Character, Integer> freqMap = new HashMap<>();
 
-        for (char ch : s.toCharArray()){
-            freqMap.put(ch, freqMap.getOrDefault(ch, 0) +1);
+        for (char ch : s.toCharArray()) {
+            freqMap.put(ch, freqMap.getOrDefault(ch, 0) + 1);
         }
         char charToReplace;
         int maxFreq = 0;
-        for (Map.Entry<Character, Integer> map : freqMap.entrySet()){
-            if (map.getValue() > maxFreq){
+        for (Map.Entry<Character, Integer> map : freqMap.entrySet()) {
+            if (map.getValue() > maxFreq) {
                 charToReplace = map.getKey();
                 maxFreq = map.getValue();
             }
@@ -412,28 +413,28 @@ class LinearSolution {
 
 
         int start = 0;
-        int end = nums.length-1;
+        int end = nums.length - 1;
 
-        while (start<=end){
-            int mid = (start+end)/2;
+        while (start <= end) {
+            int mid = (start + end) / 2;
             if (nums[mid] == target) return mid;
 
 
-            if (nums[start] <= nums[mid]){
-                if (target>=nums[start] && target<nums[mid]){
+            if (nums[start] <= nums[mid]) {
+                if (target >= nums[start] && target < nums[mid]) {
                     // search in sorted array (left)
-                    end = mid-1;
-                }else{
+                    end = mid - 1;
+                } else {
                     // search in un sorted part
-                    start = mid+1;
+                    start = mid + 1;
                 }
-            }else{
-                if (target>nums[mid] && target<=nums[end]){
+            } else {
+                if (target > nums[mid] && target <= nums[end]) {
                     // search in sorted array (right)
-                    start = mid +1;
-                }else{
+                    start = mid + 1;
+                } else {
                     // search in un sorted part
-                    end = mid-1;
+                    end = mid - 1;
                 }
             }
 
@@ -442,7 +443,7 @@ class LinearSolution {
     }
 
 
-    public static class KeyValueStore{
+    public static class KeyValueStore {
         // key
         String key;
         // default value to return if key is not found
@@ -452,29 +453,29 @@ class LinearSolution {
         // timestamp, value
         HashMap<Integer, String> timestampMap;
 
-        KeyValueStore(){
+        KeyValueStore() {
             timestampMap = new HashMap<>();
             key = "";
             defaultValue = "";
             defaultTSTMP = -1;
         }
 
-        public void setData(String key, String value, int timeStamp){
+        public void setData(String key, String value, int timeStamp) {
             this.key = key;
             this.defaultValue = value;
             this.defaultTSTMP = timeStamp;
             timestampMap.put(timeStamp, value);
         }
 
-        public String getKey(){
+        public String getKey() {
             return this.key;
         }
 
-        public String getData(String key, int timeStamp){
+        public String getData(String key, int timeStamp) {
             if (!key.equals(this.key)) return "";
-            if (!timestampMap.containsKey(timeStamp)){
-                if (defaultTSTMP <= timeStamp) return  defaultValue;
-                for (Map.Entry<Integer, String> map : timestampMap.entrySet()){
+            if (!timestampMap.containsKey(timeStamp)) {
+                if (defaultTSTMP <= timeStamp) return defaultValue;
+                for (Map.Entry<Integer, String> map : timestampMap.entrySet()) {
                     if (map.getKey() <= timeStamp) return map.getValue();
                 }
                 return "";
@@ -501,23 +502,178 @@ class LinearSolution {
 
     public double findMedianSortedArrays(int[] nums1, int[] nums2) {
         double med1 = getMedian(nums1);
-        System.out.println("nums1: "+ Arrays.toString(nums1)+ " res "+ med1);
+        System.out.println("nums1: " + Arrays.toString(nums1) + " res " + med1);
         double med2 = getMedian(nums2);
-        System.out.println("nums2: "+ Arrays.toString(nums2)+ " res "+ med2);
+        System.out.println("nums2: " + Arrays.toString(nums2) + " res " + med2);
 
         return (double) (med1 + med2) / 2;
     }
 
-    private double getMedian(int[] arr){
+    private double getMedian(int[] arr) {
         int len = arr.length;
         if (len == 1) return arr[0];
-        int mid = (len/2)-1;
+        int mid = (len / 2) - 1;
         double median;
-        if ((arr.length%2)==0){
-            median = (double) (arr[mid] + arr[mid + 1]) /2;
-        }else{
-            median = (double) arr[mid]/2;
+        if ((arr.length % 2) == 0) {
+            median = (double) (arr[mid] + arr[mid + 1]) / 2;
+        } else {
+            median = (double) arr[mid] / 2;
         }
         return median;
     }
+
+    // Maximum Subarray Sum
+    public static long maxSubarraySum(int[] arr, int n) {
+        // write your code here
+        int max = Integer.MIN_VALUE;
+        int sum = 0;
+        for (int i = 0; i < arr.length; i++) {
+            for (int j = i; j < arr.length; j++) {
+                sum += arr[j];
+                max = Math.max(sum, max);
+            }
+            sum = 0;
+        }
+
+        return max;
+    }
+
+    // Maximum Subarray
+    public int maxSubArray(int[] nums) {
+        int maxSum = Integer.MIN_VALUE;
+        int currentSum = Integer.MIN_VALUE;
+        for (int i = 0; i < nums.length; i++) {
+            currentSum = Math.max(currentSum + nums[i], nums[i]);
+            maxSum = Math.max(maxSum, currentSum);
+        }
+        return maxSum;
+    }
+
+    // Jump Game
+    /*
+    public boolean canJump(int[] nums) {
+        if (nums.length == 1) return true;
+
+        int counter = 0;
+        for (int i = nums.length-2; i>-1; i--){
+            counter++;
+            if (counter <= nums[i]){
+                counter = 0;
+            }
+        }
+        return counter==0;
+    }
+     */
+    public boolean canJump(int[] nums) {
+        return canJumpToIndex(nums, 0);
+    }
+
+    private boolean canJumpToIndex(int[] nums, int index) {
+        if (index >= nums.length - 1) {
+            return true;
+        }
+        if (nums[index] == 0) return false;
+        for (int i = 1; i <= nums[index]; i++) {
+            boolean res = canJumpToIndex(nums, index + i);
+            if (res) return res;
+        }
+        return false;
+    }
+
+
+    /*
+     *  Jump Game II
+     * */
+
+    /*
+    public int jump(int[] nums) {
+        return finMinJumps(nums, 0, 0);
+    }
+
+    private int finMinJumps(int[] nums, int index, int jumps){
+        if (index>=nums.length-1){
+            return jumps;
+        }
+        if (nums[index] == 0) return -1;
+        int minJump = Integer.MAX_VALUE;
+        for(int i=1; i<=nums[index]; i++){
+            int sol = finMinJumps(nums, index+i, jumps+1);
+            if (sol != -1){
+                minJump = Math.min(minJump, sol);
+            }
+        }
+        return minJump;
+    }
+    */
+    public int jump(int[] nums) {
+        int farthest = 0;
+        int currentEnd = 0;
+        int jumps = 0;
+
+        for (int i = 0; i < nums.length - 1; i++) {
+            farthest = Math.max(farthest, i + nums[i]);
+
+            if (i == currentEnd) {
+                jumps++;
+                currentEnd = farthest;
+            }
+        }
+        return jumps;
+    }
+
+    // 2144. Minimum Cost of Buying Candies With Discount
+    public int minimumCost(int[] cost) {
+        int buyingCost = 0;
+        Arrays.sort(cost);
+        int index = cost.length - 1;
+        int count = 0;
+        while (index >= 0) {
+            count++;
+            if (count != 3) {
+                buyingCost += cost[index];
+            } else {
+                count = 0;
+            }
+            index--;
+        }
+        return buyingCost;
+    }
+
+    public int countLargestGroup(int n) {
+        HashMap<Integer, List<Integer>> sumMap = new HashMap<>();
+        for (int i = 1; i <= n; i++) {
+            int num = i;
+            int sum = 0;
+
+            while (num > 0) {
+                sum += num % 10;
+                num = num / 10;
+            }
+            if (sumMap.containsKey(sum)) {
+                List<Integer> cur = sumMap.get(sum);
+                cur.add(i);
+                sumMap.put(sum, cur);
+            } else {
+                sumMap.put(sum, new ArrayList<>(List.of(i)));
+            }
+        }
+
+        int max = 0;
+        int maxCount = 0;
+
+        for (Map.Entry<Integer, List<Integer>> map : sumMap.entrySet()) {
+            if (map.getValue().size() > max) {
+                max = map.getValue().size();
+                maxCount = 0;
+            }
+
+            if (map.getValue().size() == max){
+                maxCount++;
+            }
+
+        }
+
+        return maxCount;
+    }
+
 }
