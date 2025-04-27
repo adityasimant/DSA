@@ -1,23 +1,10 @@
 package LinearData;
 
+import java.lang.reflect.Type;
 import java.util.*;
 
 public class LinearMain {
     public static void main(String[] args) {
-        LinearSolution sol = new LinearSolution();
-        int ans = sol.maxScore("1111");
-        int ans1 = sol.pivotInteger(4);
-
-        int[] arr = {1, 3};
-        int[] arr1 = {2, 4};
-        double ans2 = sol.countLargestGroup(51);
-        System.out.println(ans2);
-//        LinearSolution.KeyValueStore ky = new LinearSolution.KeyValueStore();
-//        ky.setData("alice", "happy", 1);
-//        System.out.println(ky.getData("alice", 1));
-//        System.out.println(ky.getData("alice", 2));
-//        ky.setData("alice", "sad", 3);
-//        System.out.println(ky.getData("alice", 3));
 
 
     }
@@ -41,6 +28,36 @@ class ListNode {
 }
 
 class LinearSolution {
+    public static int NthRoot(int n, int m) {
+        int low = 1, high = m;
+
+        while (low <= high) {
+            int mid = (low + high) / 2;
+            int midPow = multiply(mid, n, m);
+            if (midPow == 1) {
+                return mid;
+            } else if (midPow == 0) {
+                low = mid + 1;
+            } else {
+                high = mid - 1;
+            }
+        }
+        return -1;
+    }
+
+    // Helper function
+    private static int multiply(int mid, int n, int m) {
+        long ans = 1;
+        for (int i = 1; i <= n; i++) {
+            ans = ans * mid;
+            if (ans > m) {
+                return 2;  // mid^n > m
+            }
+        }
+        if (ans == m) return 1; // mid^n == m
+        return 0;               // mid^n < m
+    }
+
     public int maxScore(String s) {
         int leftCounter = 0;
         int rightCounter = 0;
@@ -390,24 +407,6 @@ class LinearSolution {
         }
     }
 
-    public int characterReplacement(String s, int k) {
-        StringBuilder builder = new StringBuilder(s);
-        HashMap<Character, Integer> freqMap = new HashMap<>();
-
-        for (char ch : s.toCharArray()) {
-            freqMap.put(ch, freqMap.getOrDefault(ch, 0) + 1);
-        }
-        char charToReplace;
-        int maxFreq = 0;
-        for (Map.Entry<Character, Integer> map : freqMap.entrySet()) {
-            if (map.getValue() > maxFreq) {
-                charToReplace = map.getKey();
-                maxFreq = map.getValue();
-            }
-        }
-        return 0;
-    }
-
     // Search in Rotated Sorted Array
     public int search1(int[] nums, int target) {
 
@@ -676,4 +675,75 @@ class LinearSolution {
         return maxCount;
     }
 
+    // Longest Substring Without Repeating Characters
+    public int lengthOfLongestSubstring(String s) {
+        int start = 0;
+        int maxLen = 0;
+        HashSet<Character> currentSet = new HashSet<>();
+        for (int end=0; end<s.length(); end++){
+            if (currentSet.contains(s.charAt(end))){
+                // increment start till it is removed
+                while (currentSet.contains(s.charAt(end))){
+                    currentSet.remove(s.charAt(start));
+                    start++;
+                }
+            }
+            currentSet.add(s.charAt(end));
+            maxLen = Math.max(maxLen, currentSet.size());
+        }
+
+        return maxLen;
+    }
+
+    public int characterReplacement(String s, int k) {
+
+        // find char with the least freq
+        HashMap<Character, Integer> freqMap = new HashMap<>();
+        for (char ch : s.toCharArray()){
+            freqMap.put(ch, freqMap.getOrDefault(ch, 0) + 1);
+        }
+        char minFreqChar = s.charAt(0);
+        for (Map.Entry<Character, Integer> map : freqMap.entrySet()){
+            if (map.getValue() < freqMap.get(minFreqChar)) minFreqChar = map.getKey();
+        }
+        if(freqMap.size() < 2) return s.length();
+        // AAABAABBAAAAAAAA k = 2
+        // MIN char = B
+
+        int balance = k;
+        int start = 0;
+        int maxLen = 0; //6
+        Queue<Integer> removedIndex = new LinkedList<>();
+        for (int end = 0; end<s.length(); end++){
+            if (s.charAt(end) == minFreqChar && balance>0){
+                balance --;
+                removedIndex.offer(end);
+            }else if (s.charAt(end) == minFreqChar && balance == 0){
+                if (!removedIndex.isEmpty()){
+                    start = removedIndex.poll() +1;
+                    balance++;
+                }else{
+                    start = end+1;
+                    continue;
+                }
+            }
+            maxLen = Math.max(maxLen, end - start +1);
+        }
+        return maxLen;
+    }
+
+    // 3392. Count Subarrays of Length Three With a Condition
+    public int countSubarrays(int[] nums) {
+        if(nums.length<3) return 0;
+        int solCount =0;
+        int start = 0;
+
+        for (int end = 2; end<nums.length; end++){
+            if (2*(nums[start] + nums[end]) == nums[end-1]){
+                solCount++;
+            }
+            start++;
+        }
+        return solCount;
+    }
 }

@@ -19,27 +19,30 @@ public class GraphMain {
 class Node {
     public int val;
     public List<Node> neighbors;
+
     public Node() {
         val = 0;
         neighbors = new ArrayList<Node>();
     }
+
     public Node(int _val) {
         val = _val;
         neighbors = new ArrayList<Node>();
     }
+
     public Node(int _val, ArrayList<Node> _neighbors) {
         val = _val;
         neighbors = _neighbors;
     }
 }
 
-class GraphSolution{
+class GraphSolution {
 
     public boolean validPath(int n, int[][] edges, int source, int destination) {
         HashMap<Integer, List<Integer>> adj = new HashMap<>();
-        boolean[]  visitedNodes = new boolean[n];
+        boolean[] visitedNodes = new boolean[n];
 
-        for(int[] i : edges){
+        for (int[] i : edges) {
             int start = i[0];
             int end = i[1];
 
@@ -50,11 +53,11 @@ class GraphSolution{
         return findDestination(source, destination, adj, visitedNodes);
     }
 
-    public boolean findDestination(int source, int destination, HashMap<Integer, List<Integer>> adj,  boolean[]  visitedNodes ){
+    public boolean findDestination(int source, int destination, HashMap<Integer, List<Integer>> adj, boolean[] visitedNodes) {
         visitedNodes[source] = true;
         if (source == destination) return true;
-        for (int nBrs : adj.get(source)){
-            if (!visitedNodes[nBrs]){
+        for (int nBrs : adj.get(source)) {
+            if (!visitedNodes[nBrs]) {
                 boolean isPresent = findDestination(nBrs, destination, adj, visitedNodes);
                 if (isPresent) return true;
             }
@@ -72,23 +75,24 @@ class GraphSolution{
         return image;
     }
 
-    private void fillColors(int[][] image, boolean[][] trackMatrix, int row, int col, int color, int n, int currentColor){
+    private void fillColors(int[][] image, boolean[][] trackMatrix, int row, int col, int color, int n, int currentColor) {
 
-        if ((row<0 || row>n-1) || (col<0 || col>image[row].length-1) || trackMatrix[row][col] || image[row][col] != currentColor) return;
+        if ((row < 0 || row > n - 1) || (col < 0 || col > image[row].length - 1) || trackMatrix[row][col] || image[row][col] != currentColor)
+            return;
         trackMatrix[row][col] = true;
         image[row][col] = color;
 
         // up
-        fillColors(image, trackMatrix, row-1, col, color, n, currentColor);
+        fillColors(image, trackMatrix, row - 1, col, color, n, currentColor);
 
         // right
-        fillColors(image, trackMatrix, row, col+1, color, n, currentColor);
+        fillColors(image, trackMatrix, row, col + 1, color, n, currentColor);
 
         // down
-        fillColors(image, trackMatrix, row+1, col, color, n, currentColor);
+        fillColors(image, trackMatrix, row + 1, col, color, n, currentColor);
 
         // left
-        fillColors(image, trackMatrix, row, col-1, color, n, currentColor);
+        fillColors(image, trackMatrix, row, col - 1, color, n, currentColor);
     }
 
     // Number of Islands
@@ -100,10 +104,10 @@ class GraphSolution{
 
         boolean[][] visited = new boolean[row][col];
 
-        for (int r = 0; r<row; r++){
-            for (int c = 0; c<col; c++){
+        for (int r = 0; r < row; r++) {
+            for (int c = 0; c < col; c++) {
                 if (visited[r][c]) continue;
-                if (grid[r][c] == '1'){
+                if (grid[r][c] == '1') {
                     islandDFS(grid, r, c, visited);
                     noOfIslands++;
                 }
@@ -113,25 +117,25 @@ class GraphSolution{
         return noOfIslands;
     }
 
-    private void islandDFS(char[][] grid, int row, int col, boolean[][] visited){
+    private void islandDFS(char[][] grid, int row, int col, boolean[][] visited) {
         // out of bound
         int n = grid.length;
-        if ((row<0 || row>n-1) || (col<0 || col>grid[row].length-1)) return;
+        if ((row < 0 || row > n - 1) || (col < 0 || col > grid[row].length - 1)) return;
         if (visited[row][col] || grid[row][col] != '1') return;
 
         visited[row][col] = true;
 
         // up
-        islandDFS(grid, row-1, col, visited);
+        islandDFS(grid, row - 1, col, visited);
 
         // right
-        islandDFS(grid, row, col+1, visited);
+        islandDFS(grid, row, col + 1, visited);
 
         //down
-        islandDFS(grid, row+1, col, visited);
+        islandDFS(grid, row + 1, col, visited);
 
         //left
-        islandDFS(grid, row, col-1, visited);
+        islandDFS(grid, row, col - 1, visited);
     }
 
     public Node cloneGraph(Node node) {
@@ -142,11 +146,11 @@ class GraphSolution{
         Queue<Node> queue = new LinkedList<>();
         queue.offer(node);
 
-        while (!queue.isEmpty()){
+        while (!queue.isEmpty()) {
             Node currentNode = queue.poll();
 
-            for (Node i: currentNode.neighbors){
-                if (!visited.containsKey(i)){
+            for (Node i : currentNode.neighbors) {
+                if (!visited.containsKey(i)) {
                     visited.put(i, new Node(i.val));
                     queue.offer(i);
                 }
@@ -166,11 +170,11 @@ class GraphSolution{
         int freshOrangesCount = 0;
         Queue<List<Integer>> queue = new LinkedList<>();
 
-        for (int i=0; i<row; i++){
-            for (int j=0; j<cols; j++){
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < cols; j++) {
                 if (grid[i][j] == 1) freshOrangesCount++;
-                if (grid[i][j] == 2){
-                    queue.offer(new ArrayList<>(List.of(i,j)));
+                if (grid[i][j] == 2) {
+                    queue.offer(new ArrayList<>(List.of(i, j)));
                 }
             }
         }
@@ -178,4 +182,36 @@ class GraphSolution{
         int time = 0;
         return 0;
     }
+
+    public static boolean detectCycleInDirectedGraph(int n, ArrayList<ArrayList<Integer>> edges) {
+        // Write your code here.
+
+        // create adj map
+        HashMap<Integer, ArrayList<Integer>> AdjMap = new HashMap<>();
+        for (ArrayList<Integer> list : edges) {
+            // this list will always be 2
+            ArrayList<Integer> currentList;
+            if (AdjMap.containsKey(list.get(0))) {
+                currentList = AdjMap.get(list.get(0));
+                currentList.add(list.get(1));
+                AdjMap.put(list.get(0), currentList);
+            } else {
+                currentList = new ArrayList<>();
+                currentList.add(list.get(1));
+                AdjMap.put(list.get(0), currentList);
+            }
+        }
+
+        return doesContainCycle(AdjMap, new HashSet<>(), edges.get(0).get(0));
+    }
+
+    private static boolean doesContainCycle(HashMap<Integer, ArrayList<Integer>> adjMap, HashSet<Integer> visited, int currentNode) {
+        visited.add(currentNode);
+        for (int i : adjMap.get(currentNode)) {
+            if (visited.contains(i)) return true;
+            doesContainCycle(adjMap, visited, i);
+        }
+        return false;
+    }
+    
 }
