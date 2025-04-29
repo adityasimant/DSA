@@ -6,6 +6,9 @@ import java.util.*;
 public class LinearMain {
     public static void main(String[] args) {
 
+        LinearSolution sol = new LinearSolution();
+        int[] arr = {5, 4, 5, 2, 3, 4, 5, 6};
+        System.out.println(sol.leastWeightCapacity(arr, 5));
 
     }
 }
@@ -746,4 +749,64 @@ class LinearSolution {
         }
         return solCount;
     }
+
+    // Longest Consecutive Sequence
+    public int longestConsecutive(int[] nums) {
+        if (nums.length == 0) return 0;
+
+        Set<Integer> set = new HashSet<>();
+        for (int num : nums) {
+            set.add(num);
+        }
+
+        int maxLength = 0;
+
+        for (int num : set) {
+            if (!set.contains(num - 1)) {
+                int currentNum = num;
+                int count = 1;
+
+                while (set.contains(currentNum + 1)) {
+                    currentNum++;
+                    count++;
+                }
+
+                maxLength = Math.max(maxLength, count);
+            }
+        }
+
+        return maxLength;
+    }
+
+    public static int leastWeightCapacity(int[] weights, int d) {
+        // Write your code here.
+
+        Arrays.sort(weights);
+        int[] res = new int[d];
+
+        int max = Integer.MIN_VALUE;
+        for(int i=0; i<d; i++){
+            res[i] = weights[i];
+            max = Math.max(res[i], max);
+        }
+        if (d > weights.length) return max;
+
+        int end = weights.length -1;
+        int start =0;
+        while(end != d-1){
+            res[start] = res[start] + weights[end];
+            max = Math.max(res[start], max);
+            start++;
+            if(start >= d){
+                start = 0;
+            }
+            end -- ;
+        }
+        System.out.print(Arrays.toString(res));
+
+        return max;
+    }
+
 }
+
+//2 3 4 4 5 10 20

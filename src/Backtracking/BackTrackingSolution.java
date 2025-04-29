@@ -6,7 +6,11 @@ import java.util.*;
 
 class BackTrackingMain{
     public static void main(String[] args) {
+        BackTrackingSolution sol = new BackTrackingSolution();
 
+        int[] arr = {8, 10, 20, 7, 15, 15, 5, 10, 9, 18};
+
+        System.out.println(sol.optimalStrategyOfGame(arr, arr.length));
     }
 }
 
@@ -195,4 +199,31 @@ public class BackTrackingSolution {
             sum -= currentList.get(i);
         }
     }
+
+
+    public int optimalStrategyOfGame(int[] coins, int n) {
+        // Write your code here.
+        int start = 0;
+        int end = n-1;
+        int maxAmount = Math.max(collectMaxAmount(coins, start+1, end, coins[start]), collectMaxAmount(coins, start, end-1, coins[end]));
+        return maxAmount;
+    }
+
+    public static int collectMaxAmount(int[] coins, int start, int end, int sum){
+        // base case
+        if (start>=end) return sum;
+
+        // Ninjax will collect coin
+        if (coins[start]>coins[end]){
+            start++;
+        }else {
+            end--;
+        }
+
+        int pickLeft = collectMaxAmount(coins, start+1, end, sum+coins[start]);
+        int pickRight = collectMaxAmount(coins, start, end-1, sum+coins[end]);
+
+        return Math.max(pickRight, pickLeft);
+    }
+
 }

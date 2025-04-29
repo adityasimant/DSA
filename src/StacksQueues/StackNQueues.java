@@ -2,30 +2,14 @@ package StacksQueues;
 
 
 import java.nio.channels.FileLock;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Stack;
+import java.util.*;
 
 public class StackNQueues {
     public static void main(String[] args) {
-        Stack<Integer> stk1 = new Stack<>();
-        Stack<Integer> stk2 = new Stack<>();
-        stk1.add(1);
-        stk1.add(6);
-        stk1.add(4);
-        stk1.add(2);
-        stk1.add(4);
+        StksAndQueues sol = new StksAndQueues();
 
-
-        stk2.add(5);
-        stk2.add(8);
-        stk2.add(1);
-        stk2.add(2);
-
-        StksAndQueues s = new StksAndQueues();
-        int ans = s.maximumValuesCanRemove(stk1, stk2, 10);
-        System.out.println(ans);
+        int[] nums = {2,1,5,6,2,3};
+        System.out.println(sol.largestRectangleArea(nums));
     }
 }
 
@@ -38,18 +22,6 @@ class ListNode {
         this.next = null;
     }
 }
-
-//class Stack {
-//    Stack (int capacity)
-//    int size()
-//    boolean isEmpty()
-//    int top()
-//    void push(int element)
-//    void pop()
-//}
-
-
-
 
 class MinStack {
     Stack<Integer> stk = new Stack<>();
@@ -261,4 +233,58 @@ class StksAndQueues {
         return fleet.size();
     }
 
+    // 84. Largest Rectangle in Histogram
+
+    // Brute Force
+    /*public int largestRectangleArea(int[] heights) {
+        int maxArea = 0;
+
+        for (int i=0; i<heights.length; i++){
+            int minHeight = Integer.MAX_VALUE;
+            int area = 0;
+            for (int j = i; j<heights.length; j++){
+                minHeight = Math.min(minHeight, heights[j]);
+                area = (j - i +1) * minHeight;
+                maxArea = Math.max(maxArea, area);
+            }
+        }
+
+        return maxArea;
+    }*/
+
+    public int largestRectangleArea(int[] heights) {
+
+        int N = heights.length;
+        int[] ltr = new int[N];
+        int[] rtl = new int[N];
+
+        Stack<Integer> stk = new Stack<>();
+        for (int i=0; i<N; i++){
+            while (!stk.isEmpty() && heights[i] < heights[stk.peek()]){
+                int index = stk.pop();
+                ltr[index] = i - index;
+            }
+            stk.push(i);
+        }
+        stk.clear();
+
+        for (int i=N-1; i>-1; i--){
+            while (!stk.isEmpty() && heights[i] < heights[stk.peek()]){
+                int index = stk.pop();
+                rtl[index] = Math.abs(i - index);
+            }
+            stk.push(i);
+        }
+        int maxArea = 0;
+        for (int i=0; i<heights.length; i++){
+            int left = rtl[i] == 0 ? i : rtl[i] - 1;
+            int right = ltr[i] == 0 ? (N-1-i) : (ltr[i]-1);
+            int width = left + right + 1;
+            int height = heights[i];
+            int area = height * width;
+            maxArea = Math.max(maxArea, area);
+        }
+
+        return maxArea;
+    }
 }
