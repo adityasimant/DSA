@@ -8,8 +8,7 @@ public class LinearMain {
 
         LinearSolution sol = new LinearSolution();
         int[] arr = {5, 4, 5, 2, 3, 4, 5, 6};
-        System.out.println(sol.leastWeightCapacity(arr, 5));
-
+        System.out.println(sol.convert("PAYPALISHIRING", 4));
     }
 }
 
@@ -805,6 +804,51 @@ class LinearSolution {
         System.out.print(Arrays.toString(res));
 
         return max;
+    }
+
+
+    public String convert(String s, int numRows) {
+
+        int cycleLen = 2 * numRows - 2;
+        int colEstimate = (s.length() / cycleLen + 1) * (numRows - 1);
+
+        char[][] matrix = new char[numRows][colEstimate];
+
+        for (char[] c: matrix){
+            Arrays.fill(c, '#');
+        }
+
+        int charPointer = 0;
+        int row = 0;
+        int col = 0;
+        while (charPointer<=s.length()-1){
+            if (row>=matrix.length){
+                row--;
+                while (row!=0){
+                    row--;
+                    col++;
+                    matrix[row][col] = s.charAt(charPointer);
+                    charPointer++;
+                }
+                row++;
+            }
+            matrix[row][col] = s.charAt(charPointer);
+            charPointer++;
+            row++;
+        }
+
+        StringBuilder str = new StringBuilder();
+        for (int i=0; i<matrix.length; i++){
+            for (int j=0; j<matrix[i].length; j++){
+                if (matrix[i][j] != '#')
+                {
+                    str.append(matrix[i][j]);
+                }
+            }
+        }
+
+
+        return str.toString();
     }
 
 }

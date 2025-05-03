@@ -6,8 +6,8 @@ public class DynamicProgrammingLeetcode {
     public static void main(String[] args) {
 
         DpOptimisedSolution sol = new DpOptimisedSolution();
-        int[] arr = {1, 5, 10};
-        System.out.println( sol.tribonacci(5));
+        int[] arr = {-2, -1};
+        System.out.println( sol.maxProduct(arr));
     }
 
     public static int findFibo(int n, int[] memo) {
@@ -368,6 +368,6 @@ class DpOptimisedSolution {
 
     // Maximum Product Subarray
     public int maxProduct(int[] nums) {
-
+        return 0;
     }
 }
