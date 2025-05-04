@@ -296,21 +296,22 @@ class TreeSolution {
 
     // Balanced Binary Tree
     public boolean isBalanced(TreeNode root) {
-       return findMaxDepthDFS(root) != -1;
+       return isBalancesRecur(root) != -1;
     }
 
-    private int findMaxDepthDFS(TreeNode root){
+    private int isBalancesRecur(TreeNode root){
         if (root == null) return 0;
 
-        int leftSubtree = findMaxDepthDFS(root.left);
-        if (leftSubtree == -1) return -1;
+        // left
+        int left = isBalancesRecur(root.left);
+        if (left==-1) return -1;
 
-        int rightSubtree = findMaxDepthDFS(root.right);
-        if (rightSubtree == -1) return -1;
+        // right
+        int right = isBalancesRecur(root.right);
+        if (right==-1) return -1;
 
-        if (Math.abs(rightSubtree - leftSubtree) > 1) return -1;
-
-        return 1 + Math.max(leftSubtree, rightSubtree);
+        int diff = Math.abs(left-right);
+        return (diff>1)?-1:Math.max(left, right)+1;
     }
 
     // Binary Tree Right Side View
@@ -362,27 +363,114 @@ class TreeSolution {
 
     // Kth Smallest Integer in BST
     public int kthSmallest(TreeNode root, int k) {
-        PriorityQueue<Integer> queue = new PriorityQueue<>();
-        treeDFSQueue(root, queue);
-        System.out.println(queue.size());
-        int counter = 0;
-        while (counter<=k){
-            counter++;
-            if (counter == k){
-                return queue.poll();
+        int[] ans = new int[1];
+        int[] count = new int[1];
+        ans[0] = -1;
+        treeDFSQueue(root, k, ans, count);
+        return ans[0];
+    }
+
+    private void treeDFSQueue(TreeNode root, int k, int[] ans, int[] count){
+        if (root!=null){
+            treeDFSQueue(root.left, k, ans, count);
+            count[0]++;
+            if (count[0] == k){
+                ans[0] = root.val;
+                return;
+            }
+            treeDFSQueue(root.right, k, ans, count);
+        }
+    }
+
+    // Count the Good nodes in Binary Tree
+    public int goodNodes(TreeNode root) {
+        int[] goodNodes = new int[1];
+        countGoodNodes(root, 0, goodNodes);
+        return goodNodes[0];
+    }
+
+    private void countGoodNodes(TreeNode root, int currentMax, int[] goodNodes){
+        if (root!=null){
+            if (root.val>currentMax){
+                goodNodes[0]++;
+            }
+
+            currentMax = Math.max(root.val, currentMax);
+
+            countGoodNodes(root.left, currentMax, goodNodes);
+            countGoodNodes(root.right, currentMax, goodNodes);
+        }
+    }
+
+}
+
+
+class Codec {
+
+    // Encodes a tree to a single string.
+    public String serialize(TreeNode root) {
+        if (root == null) return "null";
+        Queue<String> strQueue = new LinkedList<>();
+        Queue<TreeNode> nodeQueue = new LinkedList<>();
+        nodeQueue.offer(root);
+        strQueue.offer("" + root.val);
+
+
+        while (!nodeQueue.isEmpty()){
+            TreeNode currentNode = nodeQueue.poll();
+
+            if (currentNode.left == null){
+                strQueue.add("null");
+            }else {
+                nodeQueue.add(currentNode.left);
+                strQueue.add("" + currentNode.left.val);
+            }
+
+            if (currentNode.right == null){
+                strQueue.add("null");
             }else{
-                queue.poll();
+                nodeQueue.add(currentNode.right);
+                strQueue.add("" + currentNode.right.val);
             }
         }
 
-        return -1;
+        StringBuilder builder = new StringBuilder();
+        while (!strQueue.isEmpty()){
+            builder.append(strQueue.poll());
+            if (!strQueue.isEmpty()){
+                builder.append(";");
+            }
+        }
+        return builder.toString();
     }
 
-    private void treeDFSQueue(TreeNode root, PriorityQueue<Integer> queue){
-        if (root!=null){
-            queue.add(root.val);
-            treeDFSQueue(root.left, queue);
-            treeDFSQueue(root.right, queue);
+    // Decodes your encoded data to tree.
+    public TreeNode deserialize(String data) {
+        String[] strArr = data.split(";");
+        int counter = 0;
+
+        TreeNode itNode = new TreeNode(Integer.parseInt(strArr[counter]));
+        TreeNode head = itNode;
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(itNode);
+        counter++;
+
+        while (!queue.isEmpty() && counter<strArr.length-1){
+            TreeNode currentNode = queue.poll();
+
+            if (!strArr[counter].equals("null")){
+                currentNode.left =  new TreeNode(Integer.parseInt(strArr[counter]));
+                queue.offer(currentNode.left);
+            }
+            counter++;
+
+            if (!strArr[counter].equals("null")){
+                currentNode.right =  new TreeNode(Integer.parseInt(strArr[counter]));
+                queue.offer(currentNode.right);
+            }
+            counter++;
         }
+
+        return head;
     }
 }
