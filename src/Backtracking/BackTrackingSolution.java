@@ -4,109 +4,91 @@ import org.w3c.dom.ls.LSInput;
 
 import java.util.*;
 
-class BackTrackingMain{
+class BackTrackingMain {
     public static void main(String[] args) {
         BackTrackingSolution sol = new BackTrackingSolution();
 
-        int[] arr = {8, 10, 20, 7, 15, 15, 5, 10, 9, 18};
+        int[] arr = {2, 5, 6, 9};
 
-        System.out.println(sol.optimalStrategyOfGame(arr, arr.length));
+        System.out.println(sol.combinationSum(arr, 9));
     }
 }
-
 
 
 public class BackTrackingSolution {
 
     // LC78. Subsets, NC Subsets
     List<List<Integer>> subsets = new ArrayList<>();
+
     public List<List<Integer>> subsets(int[] nums) {
         findAllSubsets(nums, 0, new ArrayList<>());
         return subsets;
     }
 
-    private void findAllSubsets(int[] nums, int index, List<Integer> subList){
+    private void findAllSubsets(int[] nums, int index, List<Integer> subList) {
 
-        if (index == nums.length){
+        if (index == nums.length) {
             subsets.add(new ArrayList<>(subList));
             return;
         }
 
         // pick
         subList.add(nums[index]);
-        findAllSubsets(nums, index+1, subList);
+        findAllSubsets(nums, index + 1, subList);
         subList.remove(subList.size() - 1);
 
         // no pick
-        findAllSubsets(nums, index+1, subList);
+        findAllSubsets(nums, index + 1, subList);
     }
 
     // NC Generate Parentheses
     List<String> parentheses = new ArrayList<String>();
+
     public List<String> generateParenthesis(int n) {
-        generateAllValues("", 0,0, n);
+        generateAllValues("", 0, 0, n);
         return parentheses;
     }
 
-    private void generateAllValues(String currentStr, int left, int right, int n){
-        if (currentStr.length() == n*2){
+    private void generateAllValues(String currentStr, int left, int right, int n) {
+        if (currentStr.length() == n * 2) {
             parentheses.add(currentStr);
             return;
         }
-        if (left < n){
+        if (left < n) {
             currentStr += '(';
-            generateAllValues(currentStr, left+1, right, n);
+            generateAllValues(currentStr, left + 1, right, n);
         }
-        if (left > right){
+        if (left > right) {
             currentStr += ')';
-            generateAllValues(currentStr, left, right+1, n);
+            generateAllValues(currentStr, left, right + 1, n);
         }
-    }
-
-    List<List<Integer>> dupSubsets = new ArrayList<>();
-    public List<List<Integer>> subsetsWithDup(int[] nums) {
-        findDupSubsets(nums, 0, new ArrayList<>());
-        return dupSubsets;
-    }
-
-    private void findDupSubsets(int[] nums, int index, List<Integer> subList){
-        if (index == nums.length){
-            dupSubsets.add(new ArrayList<>(subList));
-            return;
-        }
-        // pick
-        subList.add(nums[index]);
-        findDupSubsets(nums, index+1, subList);
-
-        subList.remove(subList.size()-1);
-        // no pick
-        findDupSubsets(nums, index+1, subList);
     }
 
     // Permutations
     List<List<Integer>> permutations = new ArrayList<>();
+
     public List<List<Integer>> permute(int[] nums) {
         findALLPermutations(nums, 0);
         return permutations;
     }
 
-    private void findALLPermutations(int[] nums, int index){
-        if (index == nums.length){
+    private void findALLPermutations(int[] nums, int index) {
+        if (index == nums.length) {
             List<Integer> subList = new ArrayList<>();
-            for (int i: nums) subList.add(i);
+            for (int i : nums) subList.add(i);
             permutations.add(new ArrayList<>(subList));
         }
 
-        for (int i=index; i< nums.length; i++){
+        for (int i = index; i < nums.length; i++) {
             swap(nums, index, i);
-            findALLPermutations(nums, index+1);
+            findALLPermutations(nums, index + 1);
 
             // backtrack
             swap(nums, index, i);
         }
     }
 
-    void swap(int[] nums, int u, int v){
+    void swap(int[] nums, int u, int v) {
         int tmp = nums[u];
         nums[u] = nums[v];
         nums[v] = tmp;
@@ -128,22 +110,22 @@ public class BackTrackingSolution {
 
         List<String> letterCombinations = new ArrayList<>();
         if (digits.isEmpty()) return letterCombinations;
-        findLetterCombinations(digits, new StringBuilder(),0, letterCombinations, numberMap);
+        findLetterCombinations(digits, new StringBuilder(), 0, letterCombinations, numberMap);
         return letterCombinations;
 
     }
 
-    private void findLetterCombinations(String digits, StringBuilder cur, int index, List<String> combinations, HashMap<Character, String> map){
-        if (index == digits.length()){
+    private void findLetterCombinations(String digits, StringBuilder cur, int index, List<String> combinations, HashMap<Character, String> map) {
+        if (index == digits.length()) {
             combinations.add(cur.toString());
             return;
         }
 
         String currentLetterStr = map.get(digits.charAt(index));
-        for (int i=0; i<currentLetterStr.length(); i++){
+        for (int i = 0; i < currentLetterStr.length(); i++) {
             cur.append(currentLetterStr.charAt(i));
             findLetterCombinations(digits, cur, index + 1, combinations, map);
-            cur.deleteCharAt(cur.length()-1);
+            cur.deleteCharAt(cur.length() - 1);
         }
     }
 
@@ -154,8 +136,8 @@ public class BackTrackingSolution {
         return combinationSum;
     }
 
-    private void calculateCombinationSum(int[] candidates, int sum, int target, List<Integer> currentList , List<List<Integer>> combinationSum, int index){
-        if (sum == target){
+    private void calculateCombinationSum(int[] candidates, int sum, int target, List<Integer> currentList, List<List<Integer>> combinationSum, int index) {
+        if (sum == target) {
             // add n return
             combinationSum.add(new ArrayList<>(currentList));
             return;
@@ -163,40 +145,40 @@ public class BackTrackingSolution {
             return;
         }
 
-        for (int i=index; i<candidates.length; i++){
+        for (int i = index; i < candidates.length; i++) {
             sum += candidates[i];
             currentList.add(candidates[i]);
-            calculateCombinationSum(candidates, sum, target, currentList, combinationSum, index);
+            calculateCombinationSum(candidates, sum, target, currentList, combinationSum, i);
             sum -= candidates[i];
-            currentList.remove(currentList.size() -1);
+            currentList.remove(currentList.size() - 1);
         }
     }
 
     // LC 39: Combination Sum II
-    static List<List<Integer>> combinationSum2 = new ArrayList<>();
     public List<List<Integer>> combinationSum2(int[] candidates, int target) {
-        List<Integer> cur = new ArrayList<>();
-        for(int i: candidates) cur.add(i);
-        findLetterCombinations2(candidates, target, 0, 0, cur);
-        return combinationSum2;
+        List<List<Integer>> sol = new ArrayList<>();
+        Arrays.sort(candidates);
+        calculateCombinationSumII(candidates, target, 0, 0, new ArrayList<>(), sol);
+        return sol;
     }
 
-    private void findLetterCombinations2(int[] candidates, int target, int sum, int index, List<Integer> currentList){
-        // Base condition
-        if (sum == target) {
-            combinationSum2.add(new ArrayList<>(currentList));
+    private void calculateCombinationSumII(int[] candidates, int target, int index, int curSum, List<Integer> curList, List<List<Integer>> sol) {
+
+        if (curSum == target) {
+            // add n return
+            sol.add(new ArrayList<>(curList));
+            return;
+        } else if (curSum > target) {
             return;
         }
-        if (sum > target) return;
 
-        for (int i = 0; i<candidates.length; i++){
-            sum += currentList.get(i);
-            currentList.remove(i);
-            // call recur
-            findLetterCombinations2(candidates, target, sum, index , currentList);
-            // backtrack
-            currentList.add(i, candidates[i]);
-            sum -= currentList.get(i);
+        for (int i = index; i < candidates.length; i++) {
+            if (i > index && candidates[i] == candidates[i - 1]) continue;
+            curSum += candidates[i];
+            curList.add(candidates[i]);
+            calculateCombinationSumII(candidates, target, i + 1, curSum, curList, sol);
+            curSum -= candidates[i];
+            curList.remove(curList.size() - 1);
         }
     }
 
@@ -204,26 +186,96 @@ public class BackTrackingSolution {
     public int optimalStrategyOfGame(int[] coins, int n) {
         // Write your code here.
         int start = 0;
-        int end = n-1;
-        int maxAmount = Math.max(collectMaxAmount(coins, start+1, end, coins[start]), collectMaxAmount(coins, start, end-1, coins[end]));
+        int end = n - 1;
+        int maxAmount = Math.max(collectMaxAmount(coins, start + 1, end, coins[start]), collectMaxAmount(coins, start, end - 1, coins[end]));
         return maxAmount;
     }
 
-    public static int collectMaxAmount(int[] coins, int start, int end, int sum){
+    public static int collectMaxAmount(int[] coins, int start, int end, int sum) {
         // base case
-        if (start>=end) return sum;
+        if (start >= end) return sum;
 
         // Ninjax will collect coin
-        if (coins[start]>coins[end]){
+        if (coins[start] > coins[end]) {
             start++;
-        }else {
+        } else {
             end--;
         }
 
-        int pickLeft = collectMaxAmount(coins, start+1, end, sum+coins[start]);
-        int pickRight = collectMaxAmount(coins, start, end-1, sum+coins[end]);
+        int pickLeft = collectMaxAmount(coins, start + 1, end, sum + coins[start]);
+        int pickRight = collectMaxAmount(coins, start, end - 1, sum + coins[end]);
 
         return Math.max(pickRight, pickLeft);
+    }
+
+    // subset II
+    public List<List<Integer>> subsetsWithDup(int[] nums) {
+
+        List<List<Integer>> sol = new ArrayList<>();
+        Arrays.sort(nums);
+
+        findAllSubsets(nums, 0, new ArrayList<>(), sol);
+        return sol;
+    }
+
+    private void findAllSubsets(int[] nums, int start, List<Integer> subSet, List<List<Integer>> sol) {
+
+        sol.add(new ArrayList<>(subSet));
+
+        for (int i = start; i < nums.length; i++) {
+            if (i > start && nums[i] == nums[i - 1]) continue;
+
+            subSet.add(nums[i]);
+            findAllSubsets(nums, start + 1, subSet, sol);
+            subSet.remove(subSet.size() - 1);
+        }
+    }
+
+
+    public boolean exist(char[][] board, String word) {
+
+        int row = board.length;
+        int col = board[0].length;
+
+        int visited[][] = new int[row][col];
+
+        for (int r = 0; r < row; r++) {
+            for (int c = 0; c < col; c++) {
+                if (board[r][c] == word.charAt(0)) {
+                    boolean res = findWordBacktrack(board, visited, word, 0, r, c);
+                    if (res) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean findWordBacktrack(char[][] board, int[][] visited, String word, int index, int row, int col) {
+        if (index == word.length()) return true;
+        if (row < 0 || row >= board.length || col < 0 || col >= board[0].length) {
+            return false;
+        }
+        if (visited[row][col] != 0) return false;
+        if (word.charAt(index) != board[row][col]) return false;
+
+        visited[row][col] = 1;
+        // up
+        boolean up = findWordBacktrack(board, visited, word, index + 1, row - 1, col);
+
+        // right
+        boolean right = findWordBacktrack(board, visited, word, index + 1, row, col + 1);
+
+        //down
+        boolean down = findWordBacktrack(board, visited, word, index + 1, row + 1, col);
+
+        // left
+        boolean left = findWordBacktrack(board, visited, word, index + 1, row, col - 1);
+
+        visited[row][col] = 0;
+
+        return up || right || down || left;
     }
 
 }
