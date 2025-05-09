@@ -213,5 +213,110 @@ class GraphSolution {
         }
         return false;
     }
-    
+
+
+    public int minimumEffortPath(int[][] heights) {
+        return getBestPathDFS(heights, 0, 0, 0, 0);
+    }
+
+    private int getBestPathDFS(int[][] heights, int r, int c, int prev, int difference) {
+
+        // check out of bound
+        int rowLen = heights.length;
+        int colLen = heights[r].length;
+        if ((r < 0 || r >= rowLen) || (c < 0 || c >= colLen) || heights[r][c] < 0) {
+            return Integer.MAX_VALUE;
+        }
+
+        difference = Math.max(difference, heights[r][c] - prev);
+        heights[r][c] *= -1;
+        if ((r == rowLen - 1) && (c == colLen - 1)) {
+            return difference;
+        }
+
+        // up
+        int up = getBestPathDFS(heights, r - 1, c, heights[r][c], difference);
+
+        // right
+        int right = getBestPathDFS(heights, r, c + 1, heights[r][c], difference);
+
+        // down
+        int down = getBestPathDFS(heights, r + 1, c, heights[r][c], difference);
+
+        // left
+        int left = getBestPathDFS(heights, r, c - 1, heights[r][c], difference);
+
+        int minVal = Integer.MAX_VALUE;
+
+        for (int i = 0; i < 4; i++) {
+            if (i == 0) {
+                minVal = Math.min(minVal, up);
+            }
+            if (i == 1) {
+                minVal = Math.min(minVal, right);
+            }
+            if (i == 2) {
+                minVal = Math.min(minVal, down);
+            }
+            if (i == 3) {
+                minVal = Math.min(minVal, left);
+            }
+        }
+        return minVal;
+    }
+
+    // GFG Undirected Graph Cycle
+    public boolean isCycle(int V, int[][] edges) {
+        // Code here
+        HashMap<Integer, List<Integer>> adj = new HashMap<>();
+        for(int[] nums : edges){
+            int n1 = nums[0];
+            int n2 = nums[1];
+
+            List<Integer> n1List = adj.getOrDefault(n1, new ArrayList<>());
+            List<Integer> n2List = adj.getOrDefault(n2, new ArrayList<>());
+
+            n1List.add(n2);
+            n2List.add(n1);
+
+            adj.put(n1, n1List);
+            adj.put(n2, n2List);
+        }
+        boolean[] visited = new boolean[V];
+        for (int i=0; i<visited.length; i++){
+            if(!visited[i] && containsCycle(adj, i, visited)){
+                return true;
+            }
+        }
+
+        return  false;
+    }
+
+    private boolean containsCycle(HashMap<Integer, List<Integer>> adj, int start, boolean[] visited){
+
+        Queue<List<Integer>> queue = new LinkedList<>();
+        queue.offer(List.of(start, -1));
+        visited[start] = true;
+
+        while (!queue.isEmpty()){
+            List<Integer> currentPair = queue.poll();
+
+            int currentElement = currentPair.get(0);
+            int currentParent = currentPair.get(1);
+
+            List<Integer> neighbors = adj.get(currentElement);
+
+            for (int i : neighbors){
+                if(visited[i] && i != currentParent){
+                    return true;
+                }
+                if(i!=currentParent){
+                    queue.offer(List.of(i, currentElement));
+                    visited[i] = true;
+                }
+            }
+        }
+
+        return false;
+    }
 }
