@@ -7,8 +7,8 @@ public class LinearMain {
     public static void main(String[] args) {
 
         LinearSolution sol = new LinearSolution();
-        int[] arr = {5, 4, 5, 2, 3, 4, 5, 6};
-        System.out.println(sol.convert("PAYPALISHIRING", 4));
+        int[] arr = {-1,-2,-3, -5};
+        System.out.println(sol.countSubStrings("aacfssa", 3));
     }
 }
 
@@ -849,6 +849,55 @@ class LinearSolution {
 
 
         return str.toString();
+    }
+
+
+    public static int findSecondLargest(int n, int[] arr) {
+        // Write your code here.
+        if (arr.length<2) return -1;
+
+        int largest = Integer.MIN_VALUE;
+        int secondLargest = Integer.MIN_VALUE;
+
+        // find largest
+        for (int i : arr){
+            largest = Math.max(i, largest);
+        }
+
+        for (int i: arr){
+            if (i<largest){
+                secondLargest = Math.max(secondLargest, i);
+            }
+        }
+        if (secondLargest == Integer.MIN_VALUE){
+            return -1;
+        }
+        return secondLargest;
+    }
+
+    public static int countSubStrings(String str, int k) {
+        // Write your code here.
+        HashSet<Character> set = new HashSet<>();
+        int start = 0;
+        int distinctCounter = 0;
+
+        for (int end = 0; end<str.length(); end++){
+            if (set.size() >= k && !set.contains(str.charAt(end)) ){
+                char startChar = str.charAt(start);
+                while (startChar == str.charAt(start)){
+                    start++;
+                    if(str.charAt(start) == startChar) distinctCounter++;
+                }
+                set.remove(startChar);
+            }
+
+            set.add(str.charAt(end));
+            if (set.size() == k){
+                distinctCounter++;
+            }
+        }
+
+        return distinctCounter;
     }
 
 }

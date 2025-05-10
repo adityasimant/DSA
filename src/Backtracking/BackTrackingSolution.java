@@ -10,7 +10,7 @@ class BackTrackingMain {
 
         int[] arr = {2, 5, 6, 9};
 
-        System.out.println(sol.combinationSum(arr, 9));
+        System.out.println(sol.subsequences("abc"));
     }
 }
 
@@ -277,5 +277,75 @@ public class BackTrackingSolution {
 
         return up || right || down || left;
     }
+
+
+    // Subsequences of String
+    public ArrayList<String> findSubsequence(String mainStr, String subStr){
+        ArrayList<String> sol = new ArrayList<>();
+        findSubsequenceBT(mainStr, subStr, 0, new StringBuilder(), sol);
+        return sol;
+    }
+
+    private void findSubsequenceBT(String mainStr, String subStr, int index, StringBuilder cur, List<String> sol){
+        if (index>=mainStr.length()){
+            if (subStr.contains(cur.toString()) && !cur.isEmpty()){
+                sol.add(cur.toString());
+            }
+            return;
+        }
+
+        // pick
+        cur.append(mainStr.charAt(index));
+        findSubsequenceBT(mainStr, subStr, index+1, cur, sol);
+
+        // backtrack
+        // no pick
+        cur.deleteCharAt(cur.length()-1);
+        findSubsequenceBT(mainStr, subStr, index+1, cur, sol);
+    }
+
+    public static ArrayList<String> subsequences(String str) {
+        // Write your code here
+        ArrayList<String> sol = new ArrayList<>();
+        findAllSubsequences(str, 0, new StringBuilder(), sol);
+        return sol;
+    }
+
+    private static void findAllSubsequences(String str, int index, StringBuilder builder, ArrayList<String> sol){
+        if (index >= str.length()){
+            if (!builder.isEmpty()){
+                sol.add(builder.toString());
+            }
+            return;
+        }
+
+        builder.append(str.charAt(index));
+        findAllSubsequences(str, index+1, builder, sol);
+
+        // backtrack
+        builder.deleteCharAt(builder.length() -1);
+        findAllSubsequences(str, index+1, builder, sol);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 }

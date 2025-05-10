@@ -319,4 +319,47 @@ class GraphSolution {
 
         return false;
     }
+
+    // DFS Traversal
+    public static ArrayList<ArrayList<Integer>> depthFirstSearch(int v, int e, ArrayList<ArrayList<Integer>> edges) {
+        // Write your code here.
+        boolean[] visited = new boolean[v];
+        ArrayList<ArrayList<Integer>> searchedNodes = new ArrayList<>();
+        HashMap<Integer, List<Integer>> adjMap = new HashMap<>();
+
+        // create adj map
+        for (List<Integer> list : edges){
+            int n1 = list.get(0);
+            int n2 = list.get(1);
+
+            List<Integer> n1List = adjMap.getOrDefault(n1, new ArrayList<>());
+            n1List.add(n2);
+            adjMap.put(n1, n1List);
+
+            List<Integer> n2List = adjMap.getOrDefault(n2, new ArrayList<>());
+            n2List.add(n1);
+            adjMap.put(n2, n2List);
+        }
+
+        for (int i=0; i<visited.length; i++){
+            if (!visited[i]){
+                ArrayList<Integer> subList = new ArrayList<>();
+                getAllOccurancesDFS(i, visited, adjMap, subList);
+                searchedNodes.add(subList);
+            }
+        }
+        return searchedNodes;
+    }
+
+    private static void getAllOccurancesDFS(int index, boolean[] visited, HashMap<Integer, List<Integer>> adjMap, ArrayList<Integer> subList){
+
+        visited[index] = true;
+        subList.add(index);
+        List<Integer> neighbours = adjMap.getOrDefault(index, new ArrayList<>());
+        for (int i: neighbours){
+            if (!visited[i]){
+                getAllOccurancesDFS(i, visited, adjMap, subList);
+            }
+        }
+    }
 }
