@@ -7,8 +7,8 @@ public class LinearMain {
     public static void main(String[] args) {
 
         LinearSolution sol = new LinearSolution();
-        int[] arr = {-1,-2,-3, -5};
-        System.out.println(sol.countSubStrings("aacfssa", 3));
+        int[] arr = {1 ,5 ,3 ,4 ,2};
+        System.out.println(Arrays.toString(sol.nextGreaterElement(arr, arr.length)));
     }
 }
 
@@ -900,6 +900,128 @@ class LinearSolution {
         return distinctCounter;
     }
 
+
+    public static int[] nextGreaterElement(int[] arr, int n) {
+        // Write your code here.
+        int sol[] = new int[n];
+        Stack<Integer> stack = new Stack<>();
+        Arrays.fill(sol, -1);
+        for (int i =0; i<arr.length; i++){
+            if (!stack.isEmpty() && arr[stack.peek()] < arr[i]) {
+                while (!stack.isEmpty() && arr[stack.peek()] < arr[i]){
+                    int index = stack.pop();
+                    sol[index] = arr[i];
+                }
+            }
+            stack.push(i);
+        }
+
+        return sol;
+    }
+
+    // 42. Trapping Rain Water
+    public int trap(int[] height) {
+
+        int N = height.length;
+        int[][] matrix = new int[3][N];
+
+        // fill the first row
+        int max = 0;
+        for (int i=0; i<N; i++){
+            matrix[0][i] = max;
+            max = Math.max(max, height[i]);
+        }
+
+        // fill the second row
+        max =0;
+        for(int i=N-1; i>-1; i--){
+            matrix[1][i] = max;
+            max = Math.max(max, height[i]);
+        }
+
+        // fill the third row
+        for(int i=0; i<N; i++){
+            matrix[2][i] = Math.min(matrix[0][i], matrix[1][i]);
+        }
+
+        int totalRainWaterStored = 0;
+        for(int i=0; i<N; i++){
+            int diff = matrix[2][i] - height[i];
+            if( diff > 0){
+                totalRainWaterStored += diff;
+            }
+        }
+        return totalRainWaterStored;
+    }
+
 }
 
-//2 3 4 4 5 10 20
+
+
+class ValuePair{
+
+    int value;
+    int frequency;
+
+    ValuePair(int value, int frequency){
+        this.value = value;
+        this.frequency = frequency;
+    }
+
+    public void incrementFrequency(){
+        this.frequency += 1;
+    }
+
+    public void updateValue(int value){
+        this.value = value;
+    }
+}
+
+class LRUCache {
+
+    HashMap<Integer, ValuePair> cache = new HashMap<>();
+    int capacity;
+
+    public LRUCache(int capacity) {
+        this.capacity = capacity;
+    }
+
+    public int get(int key) {
+        if(cache.containsKey(key)){
+            ValuePair pair = cache.get(key);
+            pair.incrementFrequency();
+            return pair.value;
+        }else{
+            return -1;
+        }
+    }
+
+    public void put(int key, int value) {
+
+        if(capacity == cache.size()){
+            // remove the least used element
+            int minFreq  = Integer.MAX_VALUE;
+
+            for(Map.Entry<Integer, ValuePair> entry : cache.entrySet()){
+                minFreq = Math.min(minFreq, entry.getValue().frequency);
+            }
+
+            for(Map.Entry<Integer, ValuePair> entry : cache.entrySet()){
+                if(entry.getValue().frequency == minFreq){
+                    cache.remove(entry.getKey());
+                    break;
+                }
+            }
+        }
+
+        ValuePair pair;
+        if(cache.containsKey(key)){
+            pair = cache.get(key);
+            pair.updateValue(value);
+            pair.incrementFrequency();
+        }else{
+            pair = new ValuePair(value, 0);
+            cache.put(key, pair);
+        }
+    }
+}
